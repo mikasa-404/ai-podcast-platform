@@ -21,7 +21,7 @@ const LeftSidebar = () => {
             Castor
           </h1>
         </Link>
-        {sidebarLinks.map(({ label, imgUrl, route }) => {
+        {sidebarLinks.map(({ label, imgURL, route }) => {
           const isActive =
             pathName === route || pathName.startsWith(`${route}/`);
           return (
@@ -33,7 +33,7 @@ const LeftSidebar = () => {
                 { "bg-nav-focus border-r-4 border-green-1": isActive }
               )}
             >
-              <Image src={imgUrl} alt="logo" width={24} height={24} />
+              <Image src={imgURL} alt="logo" width={24} height={24} />
               <p className=" font-extrabold text-white">{label}</p>
             </Link>
           );
