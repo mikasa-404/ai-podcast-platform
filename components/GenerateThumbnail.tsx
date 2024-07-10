@@ -9,10 +9,10 @@ import { Input } from "./ui/input";
 import Image from "next/image";
 import { blob } from "stream/consumers";
 import { useToast } from "./ui/use-toast";
-import { useMutation } from "convex/react";
+import { useAction, useMutation } from "convex/react";
 import { useUploadFiles } from "@xixixao/uploadstuff/react";
 import { api } from "@/convex/_generated/api";
-import { set } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
 
 const GenerateThumbnail = ({
   setImage,
@@ -29,6 +29,10 @@ const GenerateThumbnail = ({
   const { startUpload } = useUploadFiles(generateUploadUrl);
 
   const { toast } = useToast();
+  //generate thumbnail from ai
+  const handleGenerateThumbnail = useAction(api.openai.generateThumbnailAction);
+
+  //image url from storage
   const getImageUrl = useMutation(api.podcasts.getUrl);
 
   //in both cases, we need to upload the image to the storage and get fileUrl
@@ -56,7 +60,19 @@ const GenerateThumbnail = ({
   };
 
   //generate image using ai or upload image from user
-  const generateImage = async () => {};
+  const generateImage = async () => {
+    try {
+      const response = await handleGenerateThumbnail({ prompt: imagePrompt });
+      const blob = new Blob([response], { type: "image/png" });
+      await handleImage(blob, `thumbnail-${uuidv4()}`);
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error generating thumbnail",
+        variant: "destructive",
+      });
+    }
+  };
   const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     try {
@@ -65,20 +81,18 @@ const GenerateThumbnail = ({
         return;
       }
       const file = files[0];
-      const blob = await file.arrayBuffer()
-      .then((buffer) => new Blob([buffer]));
-      
+      const blob = await file
+        .arrayBuffer()
+        .then((buffer) => new Blob([buffer]));
+
       await handleImage(blob, file.name);
-      
     } catch (error) {
       console.log(error);
       toast({
         title: "Error uploading image",
         variant: "destructive",
       });
-      
     }
-
   };
 
   return (
