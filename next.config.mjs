@@ -17,6 +17,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "patient-impala-737.convex.cloud",
       },
+      {
+        protocol: "https",
+        hostname: "lovely-flamingo-139.convex.cloud",
+      },
     ],
   },
 };

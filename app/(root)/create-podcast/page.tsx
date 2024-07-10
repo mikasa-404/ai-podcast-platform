@@ -29,6 +29,10 @@ import GenerateThumbnail from "@/components/GenerateThumbnail";
 import { Loader } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
 import { VoiceType } from "@/types";
+import { useToast } from "@/components/ui/use-toast";
+import { api } from "@/convex/_generated/api";
+import { useMutation } from "convex/react";
+import { useRouter } from "next/navigation";
 
 const voiceCategories = ["alloy", "shimmer", "nova", "echo", "fable", "onyx"];
 
@@ -38,6 +42,7 @@ const formSchema = z.object({
 });
 
 const CreatePodcast = () => {
+  const router = useRouter();
   const [voiceType, setVoiceType] = useState<VoiceType | null>(null);
   const [voicePrompt, setVoicePrompt] = useState<string>("");
 
@@ -62,9 +67,45 @@ const CreatePodcast = () => {
       podcastDescription: "",
     },
   });
+  const { toast } = useToast();
+  const createPodcast = useMutation(api.podcasts.createPodcast);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      setIsSubmitting(true);
+      if (!audioUrl || !imageUrl || !voiceType) {
+        toast({
+          title: "Please generate audio and thumbnail",
+        });
+        setIsSubmitting(false);
+        throw new Error("Please generate audio and thumbnail first");
+      }
+      const podcast = await createPodcast({
+        podcastTitle: values.podcastTitle,
+        podcastDescription: values.podcastDescription,
+        audioUrl,
+        imageUrl,
+        voiceType,
+        imagePrompt,
+        voicePrompt,
+        views: 0,
+        audioDuration,
+        audioStorageId: audioStorageId!,
+        imageStorageId: imageStorageId!,
+      });
+      toast({
+        title: "Podcast created",
+      });
+      setIsSubmitting(false);
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+    }
   }
 
   return (
