@@ -91,7 +91,7 @@ const GeneratePodcast = (props: GeneratePodcastProps) => {
           rows={5}
         />
       </div>
-      <div className="mt-10 w-full">
+      <div className="mt-5 w-full max-w-[200px]">
         <Button
           type="submit"
           className="text-16 w-full bg-green-1 py-4 font-bold text-white-1"
@@ -118,6 +118,7 @@ const GeneratePodcast = (props: GeneratePodcastProps) => {
           }
         />
       )}
+
     </div>
   );
 };

@@ -157,7 +157,13 @@ const CreatePodcast = () => {
               voicePrompt={voicePrompt}
               setVoicePrompt={setVoicePrompt}
             />
-            <GenerateThumbnail />
+            <GenerateThumbnail
+              setImage={setImageUrl}
+              setImageStorageId={setImageStorageId}
+              image={imageUrl}
+              imagePrompt={imagePrompt}
+              setImagePrompt={setImagePrompt}
+            />
             <div className="mt-10 w-full">
               <Button
                 type="submit"
