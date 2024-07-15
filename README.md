@@ -1,6 +1,7 @@
 # PodCraft AI: AI-Powered Podcast Studio 🎙️
 
 PodCraft AI is a revolutionary podcast platform built with Next.js 14 that empowers creators with next-level AI features. Tired of bland audio and generic visuals?
+![Podcast Page](./public/Screenshots/podcastPage.png)
 
 ### PodCraft AI lets you:
 
